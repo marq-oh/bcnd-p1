@@ -9,12 +9,13 @@ This is the first project in my BlockChain Developer course and is a requirement
 ## Wallet
 1. The [Electrum Wallet](https://electrum.org/#download) was used during development and testing. Please visit the Electrum website for instructions on how to set up
 2. When creating an Electrum Wallet, please select 'Legacy' as this is what is supported by a library (bitcoinjs-message) that is used in the code. i.e. Wallet address should start with 1. (e.g. 1J4NExPjTf2ZXNaMjk3fTAjYVr2PDq48UQ)
-3. To sign a message, go to  Tools > Sign/Verify Message
+3. To sign a message, go to  Tools > Sign/Verify Message [screenshot](https://github.com/marq-oh/bcnd-p1/blob/master/screenshots/3.%20Sign_Verify%20Message.png)
 
 ## Endpoints
 
 ### GET '/block/0'
-- Fetches genesis block [screenshot](https://github.com/marq-oh/bcnd-p1/blob/master/screenshots/1.%20Genesis%20Block.png)
+- Fetches genesis block 
+- [screenshot](https://github.com/marq-oh/bcnd-p1/blob/master/screenshots/1.%20Genesis%20Block.png)
 - Returns: (example)
 
 ```
@@ -29,7 +30,8 @@ This is the first project in my BlockChain Developer course and is a requirement
 
 ### POST '/requestValidation'
 
-- To request for ownership (example) [screenshot](https://github.com/marq-oh/bcnd-p1/blob/master/screenshots/2.%20Request%20Ownership.png)
+- To request for ownership (example) 
+- [screenshot](https://github.com/marq-oh/bcnd-p1/blob/master/screenshots/2.%20Request%20Ownership.png)
 
 ```
 {
@@ -45,7 +47,8 @@ This is the first project in my BlockChain Developer course and is a requirement
 
 ### POST '/submitStar'
 
-- To submit star (example) [screenshot](https://github.com/marq-oh/bcnd-p1/blob/master/screenshots/4.%20Submitting%20a%20Star.png)
+- To submit star (example) 
+- [screenshot](https://github.com/marq-oh/bcnd-p1/blob/master/screenshots/4.%20Submitting%20a%20Star.png)
 
 ```
 {
@@ -73,7 +76,8 @@ This is the first project in my BlockChain Developer course and is a requirement
 ```
 
 ### GET '/blocks/[address]'
-- Fetches blocks for specified address [screenshot](https://github.com/marq-oh/bcnd-p1/blob/master/screenshots/5.%20Getting%20Stars.png)
+- Fetches blocks for specified address 
+- [screenshot](https://github.com/marq-oh/bcnd-p1/blob/master/screenshots/5.%20Getting%20Stars.png)
 - Returns: (example)
 
 ```
