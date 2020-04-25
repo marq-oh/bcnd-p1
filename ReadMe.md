@@ -1,13 +1,13 @@
 # Project: Create Your Own Private Blockchain
 
 ## Background
-See [Original Instructions]
+See [Original Instructions](https://github.com/marq-oh/bcnd-p1/blob/master/UD_Instructions.md)
 
 ## Project Definition
 This is the first project in my BlockChain Developer course and is a requirement for completion. The intent of the project is to demonstrate learnings in creating a basic Private BlockChain using NodeJs. 
 
 ## Wallet
-1. The [Electrum Wallet] was used during development and testing. Please visit the Electrum website for instructions on how to set up
+1. The [Electrum Wallet](https://electrum.org/#download) was used during development and testing. Please visit the Electrum website for instructions on how to set up
 2. When creating an Electrum Wallet, please select 'Legacy' as this is what is supported by a library (bitcoinjs-message) that is used in the code. i.e. Wallet address should start with 1. (e.g. 1J4NExPjTf2ZXNaMjk3fTAjYVr2PDq48UQ)
 3. To sign a message, go to  Tools > Sign/Verify Message
 
