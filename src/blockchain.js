@@ -4,7 +4,7 @@
  *  It uses libraries like `crypto-js` to create the hashes for each block and `bitcoinjs-message` 
  *  to verify a message signature. The chain is stored in the array
  *  `this.chain = [];`. Of course each time you run the application the chain will be empty because and array
- *  isn't a persisten storage method.
+ *  isn't a persistent storage method.
  *  
  */
 
@@ -13,7 +13,6 @@ const BlockClass = require('./block.js');
 const bitcoinMessage = require('bitcoinjs-message');
 
 class Blockchain {
-
     /**
      * Constructor of the class, you will need to setup your chain array and the height
      * of your chain (the length of your chain array).
@@ -34,7 +33,7 @@ class Blockchain {
      * Passing as a data `{data: 'Genesis Block'}`
      */
     async initializeChain() {
-        if( this.height === -1){
+        if(this.height === -1){
             let block = new BlockClass.Block({data: 'Genesis Block'});
             await this._addBlock(block);
         }
@@ -64,7 +63,38 @@ class Blockchain {
     _addBlock(block) {
         let self = this;
         return new Promise(async (resolve, reject) => {
-           
+             // [MSJ] Assign height to new block
+             block.height = self.height + 1;
+
+             // [MSJ] Add timestamp to new block
+             block.time = new Date().getTime().toString().slice(0,-3);
+
+             // [MSJ] Check if previous block exists
+             if (self.chain.length > 0) {
+                /* 
+                    [MSJ]     
+                    If previous block exists, get its hash
+                    and assigned as the current block's previousBlockHash value
+                */ 
+                block.previousBlockHash = self.chain[self.height].hash;
+             }
+
+             // [MSJ] Create a hash value for the new block
+             block.hash = SHA256(JSON.stringify(block)).toString();
+             console.log('New Block: ', block.hash);
+
+             // [MSJ] Add the block to the chain
+             self.chain.push(block);
+
+             // [MSJ] Update the Height of the Chain
+             self.height += 1;
+             
+             if (self.chain[self.height] == block) {
+                 resolve(block);
+             } 
+             else {
+                 reject(Error("Block was not added."));
+             }
         });
     }
 
@@ -78,7 +108,8 @@ class Blockchain {
      */
     requestMessageOwnershipVerification(address) {
         return new Promise((resolve) => {
-            
+            // [MSJ] As per Udacity instructions
+            resolve(address + ':' + new Date().getTime().toString().slice(0,-3) + ':starRegistry');
         });
     }
 
@@ -91,7 +122,7 @@ class Blockchain {
      * 1. Get the time from the message sent as a parameter example: `parseInt(message.split(':')[1])`
      * 2. Get the current time: `let currentTime = parseInt(new Date().getTime().toString().slice(0, -3));`
      * 3. Check if the time elapsed is less than 5 minutes
-     * 4. Veify the message with wallet address and signature: `bitcoinMessage.verify(message, address, signature)`
+     * 4. Verify the message with wallet address and signature: `bitcoinMessage.verify(message, address, signature)`
      * 5. Create the block and add it to the chain
      * 6. Resolve with the block added.
      * @param {*} address 
@@ -102,8 +133,41 @@ class Blockchain {
     submitStar(address, message, signature, star) {
         let self = this;
         return new Promise(async (resolve, reject) => {
+            // [MSJ] Step 1
+            let message_time = parseInt(message.split(':')[1]);
+
+            // [MSJ] Step 2
+            let current_time = parseInt(new Date().getTime().toString().slice(0, -3));
             
+            /*
+                [MSJ] 
+                5 minutes = 5 * 60000
+                We need to multiple by 60000 to convert to milliseconds
+            */
+            
+            // [MSJ] Step 3
+            if ((current_time - message_time) > 300000) {
+                reject(Error('Request timed out.'));
+            }
+            else{
+                // [MSJ] Step 4
+                console.log(bitcoinMessage.verify(message, address, signature));
+                
+                if (bitcoinMessage.verify(message, address, signature)){
+                    // [MSJ] Step 5
+                    let block = new BlockClass.Block({"owner": address, "star": star});
+                    await self._addBlock(block);
+
+                    // [MSJ] Step 6
+                    resolve(block);
+                } 
+                else{
+                    reject(Error('Invalid message.'));  
+                }
+                            
+            } 
         });
+
     }
 
     /**
@@ -115,7 +179,12 @@ class Blockchain {
     getBlockByHash(hash) {
         let self = this;
         return new Promise((resolve, reject) => {
-           
+            let block = self.chain.filter(block => block.hash === hash)[0];
+            if(block){
+                resolve(block);
+            } else {
+                reject(null);
+            }
         });
     }
 
@@ -145,22 +214,68 @@ class Blockchain {
     getStarsByWalletAddress (address) {
         let self = this;
         let stars = [];
+        /*
+            [MSJ] 
+            - Go through each item in the chain (i.e. array) and pass in block
+            - Use getBData() to get stars data
+            - Verify data owner exists
+            - Push into stars array
+        */        
         return new Promise((resolve, reject) => {
-            
+            self.chain.forEach(block => {
+                block.getBData().then(data => {
+                    if (data.owner){
+                        stars.push(data);
+                    }
+                });
+            }); 
+            resolve(stars);
         });
     }
 
     /**
      * This method will return a Promise that will resolve with the list of errors when validating the chain.
      * Steps to validate:
-     * 1. You should validate each block using `validateBlock`
+     * 1. You should validate each block using `validate()`
      * 2. Each Block should check the with the previousBlockHash
      */
     validateChain() {
         let self = this;
         let errorLog = [];
         return new Promise(async (resolve, reject) => {
+            if (self.height > 0) { // Not validating genesis block
+                /* 
+                    [MSJ] 
+                    for loop to go through each item on the blockchain
+                    starting at index 1
+                */
+                for (var i = 1; i <= self.height; i++) { 
+                    let block = self.chain[i]; // get block at index
+                    let validation = await block.validate(); // run block through validate(); wait until validate() resolves because it returns a promise
+                    if (!validation){
+                        console.log("Block could not be validated: #${block.height}: ${block.hash}");
+                        errorLog.push(new Error("Block could not be validated: #${block.height}: ${block.hash}"))
+                    } 
+                    else if (block.previousBlockHash != self.chain[i-1].hash) {
+                        console.log("Error with previous block: Block #${block.height} not linked to the hash of block #${block.height - 1}");
+                        errorLog.push(new Error("Error with previous block: Block #${block.height} not linked to the hash of block #${block.height - 1}"));
+                    }
+                }
+            } 
+            else {
+                reject(Error("Unable to validate chain.")).catch(error => {
+                    console.log('caught', error.message);
+                });
+            }
             
+            // [MSJ] Check errorLog
+            if (errorLog.length > 0){
+                reject(errorLog);
+            }
+            else{
+                resolve("Chain is valid."); 
+            }
+
         });
     }
 
