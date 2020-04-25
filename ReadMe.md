@@ -14,7 +14,7 @@ This is the first project in my BlockChain Developer course and is a requirement
 ## Endpoints
 
 ### GET '/block/0'
-- Fetches genesis block
+- Fetches genesis block [screenshot](https://github.com/marq-oh/bcnd-p1/blob/master/screenshots/1.%20Genesis%20Block.png)
 - Returns: (example)
 
 ```
@@ -29,7 +29,7 @@ This is the first project in my BlockChain Developer course and is a requirement
 
 ### POST '/requestValidation'
 
-- To request for ownership (example)
+- To request for ownership (example) [screenshot](https://github.com/marq-oh/bcnd-p1/blob/master/screenshots/2.%20Request%20Ownership.png)
 
 ```
 {
@@ -43,9 +43,9 @@ This is the first project in my BlockChain Developer course and is a requirement
 "19yQz2gtojeb9n2nkhxhu8AD6b265eVkZZ:1587855868:starRegistry"
 ```
 
-### POST '/requestValidation'
+### POST '/submitStar'
 
-- To submit star (example)
+- To submit star (example) [screenshot](https://github.com/marq-oh/bcnd-p1/blob/master/screenshots/4.%20Submitting%20a%20Star.png)
 
 ```
 {
@@ -55,7 +55,7 @@ This is the first project in my BlockChain Developer course and is a requirement
      "star": {
          "dec": "5° 0' 8.0",
          "ra": "5h 0m 8.0s",
-         "story": "Testing the other story444444"
+         "story": "Testing the other story 4"
      }
 }
 ```
@@ -73,7 +73,7 @@ This is the first project in my BlockChain Developer course and is a requirement
 ```
 
 ### GET '/blocks/[address]'
-- Fetches blocks for specified address
+- Fetches blocks for specified address [screenshot](https://github.com/marq-oh/bcnd-p1/blob/master/screenshots/5.%20Getting%20Stars.png)
 - Returns: (example)
 
 ```
