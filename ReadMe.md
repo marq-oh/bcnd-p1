@@ -29,7 +29,7 @@ This is the first project in my BlockChain Developer course and is a requirement
 
 ### POST '/requestValidation'
 
-- To request for ownership
+- To request for ownership (example)
 
 ```
 {
@@ -45,7 +45,7 @@ This is the first project in my BlockChain Developer course and is a requirement
 
 ### POST '/requestValidation'
 
-- To submit star
+- To submit star (example)
 
 ```
 {
