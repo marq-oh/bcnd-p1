@@ -39,15 +39,21 @@ class Block {
         let self = this;
 
         return new Promise((resolve, reject) => {
-            // [MSJ] Save in auxiliary variable the current block hash
-            const aux_var = self.hash;
+            // [MSJ] Store the current hash of the block in a variable
+            let currentHash = self.hash;
+
+            // [MSJ] Make the hash of the block as null.
+            self.hash = null;
             
-            // [MSJ] Recalculate the hash of the Block
-            recal_hash = SHA256(JSON.stringify(newBlock)).toString();
+            // [MSJ] Recalculate the hash value again and store it in a different variable. 
+            let newHash = SHA256(JSON.stringify(self)).toString();
+
+            // [MSJ] Assign the original hash value to the hash property of the block. 
+            self.hash = currentHash
             
             // [MSJ] Returning the Block is valid
-            if (self.hash === recal_hash) {
-                resolve(self.hash);
+            if (currentHash === newHash) {
+                resolve(true);
             }
             // [MSJ] Returning the Block is not valid
             else {
@@ -71,22 +77,29 @@ class Block {
         let self = this;
 
         return new Promise((resolve, reject) => {
+            
+            // If height == 0, i.e. first, then Genesis Block
+            if (self.height == 0) {
+                resolve("Genesis Block");
+            }
+ 
             // [MSJ] Getting the encoded data saved in the Block
-            const encoded_data = self.body;    
+            let encoded_data = self.body;    
 
             // [MSJ] Decoding the data to retrieve the JSON representation of the object
-            const decoded_data = hex2ascii(encoded_data);
+            let decoded_data = hex2ascii(encoded_data);
      
             // [MSJ] Parse the data to an object to be retrieve.
-            const decoded_object = JSON.parse(decoded_data)        
+            let decoded_object = JSON.parse(decoded_data);        
 
             // [MSJ] Resolve with the data if the object isn't the Genesis block
-            if (self.height > 0) {
+            if (decoded_object) {
                 resolve(decoded_object);
             }
-            // [MSJ] Returning the Block is not valid
+            
+            // [MSJ] Returning that block has no data
             else {
-                reject(Error("Genesis Block"));
+                reject(Error("Block has no data"));
             }
 
         });
