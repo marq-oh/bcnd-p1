@@ -249,14 +249,14 @@ class Blockchain {
                     for loop to go through each item on the blockchain
                     starting at index 1
                 */
-                for (var i = 1; i <= self.height; i++) { 
+                for (var i = 0; i <= self.height; i++) { 
                     let block = self.chain[i]; // get block at index
                     let validation = await block.validate(); // run block through validate(); wait until validate() resolves because it returns a promise
                     if (!validation){
                         console.log("Block could not be validated: #${block.height}: ${block.hash}");
                         errorLog.push(new Error("Block could not be validated: #${block.height}: ${block.hash}"))
                     } 
-                    else if (block.previousBlockHash != self.chain[i-1].hash) {
+                    else if ((i > 0) && (block.previousBlockHash != self.chain[i-1].hash)) {
                         console.log("Error with previous block: Block #${block.height} not linked to the hash of block #${block.height - 1}");
                         errorLog.push(new Error("Error with previous block: Block #${block.height} not linked to the hash of block #${block.height - 1}"));
                     }
